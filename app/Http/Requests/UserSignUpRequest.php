@@ -19,7 +19,8 @@ class UserSignUpRequest extends FormRequest
             'dob' => 'required|date',
             'country' => 'required|max:25',
             'contact' => 'required|numeric',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8'
+            // 'confirmPassword'=> 'required|same:password'
         ];
     }
 

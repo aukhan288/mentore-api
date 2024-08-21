@@ -9,3 +9,4 @@ Route::get('/user', function (Request $request) {
 
 
 Route::post('/signup',[App\Http\Controllers\UserController::class,'signup']);
+Route::post('/login',[App\Http\Controllers\UserController::class,'login']);
