@@ -11,5 +11,5 @@ Route::get('/user', function (Request $request) {
 Route::post('/signup',[App\Http\Controllers\UserController::class,'signup']);
 Route::post('/login',[App\Http\Controllers\UserController::class,'login']);
 
-Route::post('/image-upload',[App\Http\Controllers\UserController::class,'imageUpload'])->middleware('auth:sanctum');
-Route::post('/update-profile',[App\Http\Controllers\UserController::class,'imageUpload'])->middleware('auth:sanctum');
+Route::post('/image-upload',[App\Http\Controllers\UserController::class,'imageUpload']);
+Route::post('/update-profile',[App\Http\Controllers\UserController::class,'imageUpload']);

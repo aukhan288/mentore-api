@@ -24,8 +24,14 @@ class UserController extends Controller
     {
         // Create the user with hashed password
         $user = User::create([
+            'role_id' => 2,
             'name' => $request->name,
             'email' => $request->email,
+            'dob' => $request->dob,
+            'plate_form' => $request->plate_form??'web',
+            'country_code' => $request->country_code,
+            'contact' => $request->contact,
+            'ip_address' => $request->ip(),
             'password' => Hash::make($request->password),
         ]);
 
