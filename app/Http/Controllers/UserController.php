@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Http\Requests\UserSignUpRequest;
+use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\ImageUploadRequest;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -22,8 +24,14 @@ class UserController extends Controller
     {
         // Create the user with hashed password
         $user = User::create([
+            'role_id' => 2,
             'name' => $request->name,
             'email' => $request->email,
+            'dob' => $request->dob,
+            'plate_form' => $request->plate_form??'web',
+            'country_code' => $request->country_code,
+            'contact' => $request->contact,
+            'ip_address' => $request->ip(),
             'password' => Hash::make($request->password),
         ]);
 
@@ -35,7 +43,7 @@ class UserController extends Controller
     }
 
     //login
-    public function login(Request $request){
+    public function login(UserLoginRequest $request){
         
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $user=Auth::user();
@@ -46,7 +54,34 @@ class UserController extends Controller
                 'data' => $user 
             ],200);
         }else{
-          dd('login failed');
+            return response()->json([
+                'code' => 401,
+                'message' => 'Unauthorized',
+                'error' => 'Invalid email or password.'
+            ], 401);
         }
+    }
+
+    public function imageUpload(ImageUploadRequest $request){
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            
+            $image->move(public_path('images'), $filename);
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Image uploaded successfully',
+                'image_path' => 'images/' . $filename
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'No image file found in request'
+            ], 400);
+        }
+
     }
 }
