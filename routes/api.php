@@ -13,3 +13,4 @@ Route::post('/login',[App\Http\Controllers\UserController::class,'login']);
 
 Route::post('/image-upload',[App\Http\Controllers\UserController::class,'imageUpload']);
 Route::post('/update-profile',[App\Http\Controllers\UserController::class,'imageUpload']);
+Route::get('/user-wallet/{user}',[App\Http\Controllers\UserController::class,'getWallet'])->middleware('auth:sanctum');
