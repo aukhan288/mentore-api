@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Wallet;
 use App\Http\Requests\UserSignUpRequest;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\ImageUploadRequest;
@@ -43,17 +44,27 @@ class UserController extends Controller
     }
 
     //login
-    public function login(UserLoginRequest $request){
-        
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
-            $user=Auth::user();
-            $user->access_token = $user->createToken('Personal Access Token')->plainTextToken;
+    public function login(UserLoginRequest $request)
+    {
+        // Attempt to authenticate the user
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            // Get the authenticated user
+            $user = Auth::user();
+            
+            // Create a personal access token
+            $token = $user->createToken('Personal Access Token')->plainTextToken;
+
+            // Return the response with the token and user data
             return response()->json([
                 'code' => 200,
-                'message' => 'Login Successfully',
-                'data' => $user 
-            ],200);
-        }else{
+                'message' => 'Login successfully',
+                'data' => [
+                    'user' => $user,
+                    'token' => $token
+                ]
+            ], 200);
+        } else {
+            // Return unauthorized response if authentication fails
             return response()->json([
                 'code' => 401,
                 'message' => 'Unauthorized',
@@ -77,6 +88,22 @@ class UserController extends Controller
                 'image_path' => 'images/' . $filename
             ]);
         } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'No image file found in request'
+            ], 400);
+        }
+
+    }
+    public function getWallet($user){
+
+        try {
+            $wallet = Wallet::where('user_id', $user)->first();
+            return response()->json([
+                'success' => true,
+                'wallet' => $wallet
+            ]);
+        } catch(Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'No image file found in request'
