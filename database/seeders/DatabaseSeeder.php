@@ -21,6 +21,10 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
             AdminSeeder::class,
+            services::class,
+            AcademicLevel::class,
+            ReferencingStyle::class,
+            AssignmentStatuses::class,
         ]);
     }
 }

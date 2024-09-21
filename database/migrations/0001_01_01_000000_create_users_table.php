@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('dob');
             $table->char('country_code', 4);
             $table->string('contact')->unique();
+            $table->string('image')->nullable();
             $table->char('country_flag',10)->nullable();
             $table->char('plate_form',10);
             $table->string('ip_address', 45)->nullable();

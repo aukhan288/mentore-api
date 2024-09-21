@@ -22,18 +22,15 @@ class ImageUploadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'required|image|mimes:png,jpg|max:2048',
-
+            'attachment' => 'required|file|mimes:jpg,jpeg,png,doc,docx,ppt,pptx,xls,xlsx,pdf,plainText,csv',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'image.required' => 'Image address is required.',
-            'image.image' => 'The file must be an image.',
-            'image.mimes' => 'The image must be in PNG or JPG format.',
-            'image.max' => 'The image may not be greater than 2 MB.',
+            'attachment.required' => 'Image address is required.',
+            'attachment.mimes' => 'Invalid file format.',
         ];
     }
 }
