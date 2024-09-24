@@ -10,6 +10,7 @@ use App\Http\Requests\UserSignUpRequest;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\ImageUploadRequest;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\ChangePasswordRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -176,17 +177,25 @@ class UserController extends Controller
             if ($request->hasFile('image')) {
                 $user['image'] = $request->file('image')->store('images', 'public'); // Adjust the path as needed
             }
-            try {
-                $user->save();
-            } catch (\Exception $e) {
-                dd($e);
-                \Log::error('Update Failed:', ['error' => $e->getMessage()]);
-                return response()->json(['message' => 'Update failed.', 'error' => $e->getMessage()], 500);
-            }
+
+            $user->save();
  
         } 
         catch(Exception $e) {
            dd($e);
+        }
+
+    }
+    public function changePassword(ChangePasswordRequest $request, User $user) {
+        try{
+
+            $user=User::update([
+                'password' => Hash::make($request->newPassword)
+            ]);
+            return response()->json(['success'=>true, 'message' => 'Password changed successfully!'], 200);
+        } 
+        catch(Exception $e) {
+            return response()->json(['success'=>false, 'message' => 'Someting went wrong. Please try later'], 400);
         }
 
     }
@@ -199,4 +208,13 @@ class UserController extends Controller
         }
         return response()->json(['message' => 'User not found'], 404);
     }
+
+    public function logout(Request $request)
+    {
+        // Revoke the user's current token
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json(['success' => true, 'message' => 'Logged out successfully.']);
+    }
+
 }
