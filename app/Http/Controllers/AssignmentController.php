@@ -34,9 +34,11 @@ class AssignmentController extends Controller
     }
 
     function addOrder(AddOrderRequest $request){
+        $previousAssignment=342315;
         try {
             $order=Assignment::create([
                 'user_id'=>Auth::id(),
+                'assignments_id'=>'LA' . (Assignment::count()+1+$previousAssignment),
                 'subject'=> $request->subject,
                 'service'=> $request->service,
                 'university'=> $request->university,
@@ -56,7 +58,7 @@ class AssignmentController extends Controller
                         $attachment->save();
                     }
                 }
-                $order->assignments_id=Assignment:: $order->assignments_id = ($latestId !== null) ? $latestId + 1 : 1;
+                
             //   }
             return response()->json([
                 'success' => true,
@@ -167,9 +169,12 @@ class AssignmentController extends Controller
     
 
     function AssignmentCounts(Request $request){
-        $pendingOrders = Assignment::where('user_id', Auth::id())
+        $inprogress = Assignment::where('user_id', Auth::id())
         ->where('is_completed', 0)->count();
-        dd($pendingOrders);
+        $completed = Assignment::where('user_id', Auth::id())
+        ->where('is_completed', 1)->count();
+        $total=$inprogress+$completed;
+        return response()->json(['succes' => true, 'data'=>['total'=>$total,'inprogress'=>$inprogress,'completed'=>$completed]], 200);
     }
     
 }
